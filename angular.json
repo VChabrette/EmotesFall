@@ -62,10 +62,10 @@
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"configurations": {
 						"production": {
-							"browserTarget": "twitch_quiz:build:production"
+							"browserTarget": "angular_app:build:production"
 						},
 						"development": {
-							"browserTarget": "twitch_quiz:build:development"
+							"browserTarget": "angular_app:build:development"
 						}
 					},
 					"defaultConfiguration": "development"

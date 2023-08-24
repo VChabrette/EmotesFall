@@ -1,8 +1,7 @@
 // a service that uses the WebSocketService to synchronize a common state between all clients
 import { Injectable } from '@angular/core';
 import { WebSocketService } from './websocket.service';
-import { BehaviorSubject, Observable, Subject, debounce, debounceTime, filter, map, tap } from 'rxjs';
-import { DeepProxy, THandlerContext } from '@qiwi/deep-proxy';
+import { BehaviorSubject, Observable, debounceTime, filter, map, tap } from 'rxjs';
 
 @Injectable({
 	providedIn: "root",

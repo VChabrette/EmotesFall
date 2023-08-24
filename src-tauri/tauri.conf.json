@@ -1,0 +1,68 @@
+{
+  "build": {
+    "beforeDevCommand": "yarn start --port 1420",
+    "beforeBuildCommand": "yarn build",
+    "devPath": "http://localhost:1420",
+    "distDir": "../dist/app",
+    "withGlobalTauri": true
+  },
+  "package": {
+    "productName": "",
+    "version": "0.0.0"
+  },
+  "tauri": {
+    "allowlist": {
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "writeFile": true,
+        "readFile": true,
+        "readDir": true,
+        "createDir": true,
+        "scope": [
+          "$APPDATA/.persistent_data",
+          "$APPDATA/**",
+          "$APPDATA/*",
+          "$APPDATA/",
+          "$APPDATA",
+          "$DOWNLOAD/**",
+          "$DOWNLOAD/*",
+          "$DOWNLOAD/",
+          "$DOWNLOAD"
+        ]
+      },
+      "clipboard": {
+        "all": true
+      },
+      "dialog": {
+        "open": true,
+        "save": true
+      }
+    },
+    "bundle": {
+      "active": true,
+      "targets": "all",
+      "identifier": "",
+      "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+      ]
+    },
+    "security": {
+      "csp": "default-src * 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self' style-src: 'self' 'unsafe-inline' event-src: 'self' 'unsafe-inline' script-src: 'self' 'unsafe-inline' 'unsafe-eval' font-src: 'self' 'unsafe-inline' data: 'self' 'unsafe-inline'"
+    },
+    "windows": [
+      {
+        "fullscreen": false,
+        "resizable": true,
+        "title": "Twitch Quiz",
+        "width": 1300,
+        "height": 900
+      }
+    ]
+  }
+}

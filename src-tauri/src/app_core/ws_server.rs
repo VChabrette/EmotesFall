@@ -127,6 +127,10 @@ impl WsServer {
 									println!("Error sending state to client {}: {}", sender_id2, e);
 								}
                             }
+                            "event" => {
+                                // the client is sending an event
+                                // no need to do anything here
+                            }
                             _ => {
                                 println!("Unknown message type");
                             }

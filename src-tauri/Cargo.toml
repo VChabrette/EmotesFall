@@ -1,7 +1,7 @@
 [package]
 name = "custom_tauri_app"
 version = "0.0.0"
-description = "An Tauri app with embedded server for external views"
+description = "A Tauri app with embedded server for external views"
 authors = ["Vincent Chabrette"]
 license = ""
 repository = ""

@@ -1,5 +1,5 @@
 [package]
-name = "custom_tauri_app"
+name = "emote-fall"
 version = "0.0.0"
 description = "A Tauri app with embedded server for external views"
 authors = ["Vincent Chabrette"]

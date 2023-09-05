@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "",
+    "productName": "emote-fall",
     "version": "0.0.0"
   },
   "tauri": {
@@ -59,7 +59,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "Twitch Quiz",
+        "title": "Emote Fall",
         "width": 1300,
         "height": 900
       }

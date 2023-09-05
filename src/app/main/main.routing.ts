@@ -3,6 +3,7 @@ import { MainComponent } from './main.component';
 import { NgModule, inject } from '@angular/core';
 import { StorageService } from '../core/services/storage.service';
 import { tauriGuard } from '../shared/guards/tauri.guard';
+import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
 	{
@@ -13,7 +14,7 @@ const routes: Routes = [
 		children: [
 			{
 				path: '',
-				// component: HomeComponent,
+				component: HomeComponent,
 			},
 		]
 	}

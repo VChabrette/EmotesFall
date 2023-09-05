@@ -14,7 +14,6 @@ export class EventsService {
         map(msg => { try { return JSON.parse(msg) } catch (e) { return msg } }),
         filter(data => data?.type === 'event'),
         filter(data => this.listeners.has(data?.event)),
-        debounceTime(10),
         tap(({ event, data }) => this.listeners.get(event)!.next(data)),
       )
       .subscribe();

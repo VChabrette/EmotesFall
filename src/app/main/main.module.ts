@@ -5,10 +5,15 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { MainRoutingModule } from './main.routing';
 import { CoreModule } from '../core/core.module';
+import { HomeComponent } from './pages/home/home.component';
+import { TwitchApiService } from './services/twitch/twitch-api.service';
+import { TwitchChatService } from './services/twitch/twitch-chat.service';
+import { EmotesFallService } from './services/emotes-fall.service';
 
 @NgModule({
 	declarations: [
-		MainComponent
+		MainComponent,
+		HomeComponent
 	],
 	imports: [
 		CommonModule,
@@ -17,6 +22,11 @@ import { CoreModule } from '../core/core.module';
 		ReactiveFormsModule,
 		SharedModule,
 		CoreModule,
+	],
+	providers: [
+		TwitchApiService,
+		TwitchChatService,
+		EmotesFallService,
 	],
 	bootstrap: [MainComponent],
 })

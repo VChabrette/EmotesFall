@@ -36,6 +36,7 @@ export class EmotesFallService {
 
       for (const url of emotesURLs) {
         this.events.emit('emotes-fall:emote-added', { url });
+        await new Promise(resolve => setTimeout(resolve, 250));
       }
     });
 
@@ -51,6 +52,7 @@ export class EmotesFallService {
       emotes.sort(() => Math.random() - 0.5); // shuffle the emotes
       for (let i = 0; i < raidInfo.viewerCount; i++) {
         this.events.emit('emotes-fall:emote-added', { url: emotes[i % emotes.length] })
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     });
 
@@ -59,7 +61,7 @@ export class EmotesFallService {
       if (!this.started) return;
       if (!message.userInfo.isBroadcaster) return;
 
-      this.events.emit('emotes-fall:flush', {});
+      this.flush();
     });
   }
 
@@ -77,5 +79,9 @@ export class EmotesFallService {
     }))).filter(Boolean) as Array<string>
 
     return emotesUrl;
+  }
+
+  public flush() {
+    this.events.emit('emotes-fall:flush', {});
   }
 }

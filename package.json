@@ -22,6 +22,7 @@
     "@twurple/api": "^7.0.1",
     "@twurple/auth": "^7.0.1",
     "@twurple/chat": "^7.0.1",
+    "color.js": "^1.2.0",
     "gifuct-js": "^2.1.2",
     "pixi.js": "^7.2.4",
     "planck": "^1.0.0-beta.15",

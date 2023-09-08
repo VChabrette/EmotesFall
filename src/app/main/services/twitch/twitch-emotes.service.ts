@@ -31,12 +31,12 @@ export class TwitchEmotesService implements EmotesService {
   };
 
   public async getChannelEmotes(channelName: string, animated = true): Promise<Array<string>> {
-    const user = await this.api.client.users.getUserByName(channelName);
+    const user = await this.api.getUserByName(channelName);
     if (!user) {
       throw new Error(`Could not find user ${channelName}`);
     }
 
-    const emotes = await this.api.client.chat.getChannelEmotes(user);
+    const emotes = await this.api.getChannelEmotes(user);
     return emotes.map(emote => {
       const url = emote.getAnimatedImageUrl('3.0');
       return url && animated ? url : emote.getStaticImageUrl('3.0') as string

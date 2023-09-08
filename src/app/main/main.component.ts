@@ -6,8 +6,4 @@ import { TwitchChatService } from './services/twitch/twitch-chat.service';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent {
-  constructor(chat: TwitchChatService) {
-    chat.connectTo('vchabrette');
-  }
-}
+export class MainComponent { }

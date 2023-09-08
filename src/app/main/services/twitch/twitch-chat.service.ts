@@ -15,7 +15,7 @@ export class TwitchChatService implements ChatService {
   private messagesSubjects: Map<RegExp, Subject<ChatMessage>> = new Map();
   private raidSubject: Subject<{ raidUser: string, raidInfo: ChatRaidInfo }> = new Subject();
 
-  private get connected(): boolean {
+  public get isConnected(): boolean {
     if (!this.client) return false;
     return this.client.isConnected;
   }
@@ -26,9 +26,9 @@ export class TwitchChatService implements ChatService {
     if (!this.client?.isConnected && !this.client?.isConnecting) this.client.connect();
 
     await new Promise<void>(async resolve => {
-      if (this.connected) return;
+      if (this.isConnected) return;
 
-      while (!this.connected) {
+      while (!this.isConnected) {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
 
@@ -37,6 +37,7 @@ export class TwitchChatService implements ChatService {
   }
 
   public async connectTo(username: string): Promise<void> {
+    if (!username) throw new Error('No username provided');
     if (this.client) this.client.quit();
 
     this.client = new ChatClient({ channels: [username] });
@@ -78,5 +79,10 @@ export class TwitchChatService implements ChatService {
 
   public onRaids(): Observable<{ raidUser: string, raidInfo: ChatRaidInfo }> {
     return this.raidSubject.asObservable();
+  }
+
+  public disconnect(): void {
+    if (!this.client) return;
+    this.client.quit();
   }
 }

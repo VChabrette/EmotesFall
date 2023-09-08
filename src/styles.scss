@@ -2,5 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "fonts/betty-noir";
+@import "fonts/pp-pier";
+
+html { 
+	--accent-color: theme('colors.zinc.50');
+	--secondary-color: theme('colors.zinc.950');
+}
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

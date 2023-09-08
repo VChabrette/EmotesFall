@@ -4,7 +4,15 @@ module.exports = {
     "./src/**/*.{html,ts}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'accent': 'var(--accent-color)',
+        'secondary': 'var(--secondary-color)',
+      },
+    },
+    fontFamily: {
+      title: ['"PP Pier Sans"']
+    }
   },
   plugins: [],
 }

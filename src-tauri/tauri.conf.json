@@ -58,9 +58,9 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
+        "resizable": false,
         "title": "Emote Fall",
-        "width": 1300,
+        "width": 500,
         "height": 900
       }
     ]

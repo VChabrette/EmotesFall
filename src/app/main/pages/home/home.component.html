@@ -1,4 +1,4 @@
-<div class="flex flex-col w-full space-y-10">
+<div class="fixed z-10 flex flex-col w-full space-y-10">
 	<div class="px-10 pt-10">
 		<h1 class="text-[5em] font-title -ml-1 text-accent">Emotes Fall</h1>
 		<div class="-mt-5 italic text-accent">Fait avec amour par VChabrette</div>
@@ -6,9 +6,9 @@
 	<div class="w-full space-y-5 overflow-hidden settings">
 		<form [formGroup]="channelForm" class="flex justify-between w-full h-16 space-x-5 text-lg channel-form" [ngClass]="{'!w-[calc(100%+4rem)]': channelControl.invalid}">
 			<input type="text" formControlName="channel" placeholder="Votre chaîne" id="channel-input" autocomplete="off" spellcheck="false" autocorrect="off" class="w-full py-0 pl-10 rounded-r-full outline-none text-secondary bg-accent disabled:text-secondary disabled:select-none" [ngClass]="{'!bg-red-400': channelControl.hasError('invalidTwitchUser')}" [attr.disabled]="chat.isConnected ? true : null">
-			<img [src]="channel?.profilePictureUrl" alt="" srcset="" class="h-full rounded-l-full aspect-square bg-accent">
+			<img [src]="channel?.profilePictureUrl" alt="" srcset="" class="h-full rounded-l-full aspect-square bg-accent" [ngClass]="{'grayscale': !chat.isConnected }">
 		</form>
-		<button type="submit" (click)="onChannelSubmit()" class="p-10 py-3 text-lg italic rounded-r-full text-secondary bg-accent" [ngClass]="{'-translate-x-full': channelControl.invalid || chat.isConnected}">Démarrer les dingz</button>
+		<button type="submit" (click)="onChannelSubmit()" class="p-10 py-3 text-lg italic rounded-r-full text-secondary bg-accent" [ngClass]="{'-translate-x-full': channelControl.invalid || chat.isConnected}">{{launchLabel}}</button>
 		<!-- <div class="p-10">
 			<button type="button" (click)="flush()">FLUSH</button>
 			<div class="flex items-center space-x-2 align-middle">
@@ -21,6 +21,7 @@
 		<div class="w-1/2 px-10 py-5 space-y-3 rounded-r-full text-secondary bg-accent" [ngClass]="{'-translate-x-full': !chat.isConnected }">
 			<button type="button" (click)="flush()" class="px-5 py-2 rounded-full bg-secondary text-accent">Vider l'écran</button>
 			<button type="button" (click)="chat.disconnect()" class="px-5 py-2 rounded-full bg-secondary text-accent">Déconnecter</button>
+			<div>{{url}}</div>
 			<div class="flex items-center space-x-2 align-middle">
 				<input type="checkbox" id="checkbox" [(ngModel)]="emotesFall.animated" [ngModelOptions]="{standalone: true}" />
 				<label for="checkbox" class="flex items-center cursor-pointer">
@@ -30,3 +31,4 @@
 		</div>
 	</div>
 </div>
+<app-emotes-background [emotes]="channelEmotes" class="fixed top-0 left-0 z-0 w-full h-full opacity-50 grayscale"></app-emotes-background>

@@ -1,3 +1,7 @@
 * {
 	transition: all 0.3s ease-in-out;
 }
+
+input[disabled] {
+	-webkit-text-fill-color: var(--secondary-color);
+}

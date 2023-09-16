@@ -9,11 +9,13 @@ import { HomeComponent } from './pages/home/home.component';
 import { TwitchApiService } from './services/twitch/twitch-api.service';
 import { TwitchChatService } from './services/twitch/twitch-chat.service';
 import { EmotesFallService } from './services/emotes-fall.service';
+import { EmotesBackgroundComponent } from './components/emotes-background/emotes-background.component';
 
 @NgModule({
 	declarations: [
 		MainComponent,
-		HomeComponent
+		HomeComponent,
+  EmotesBackgroundComponent
 	],
 	imports: [
 		CommonModule,

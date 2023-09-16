@@ -1,0 +1,18 @@
+// animate emote, emote falls from top to bottom
+// emote is a img tag with src of emote url
+.emote {
+  position: fixed;
+  top: 0;
+  animation: fall 15s linear;
+  animation-fill-mode: forwards;
+  width: 10vw;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-30vw);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}

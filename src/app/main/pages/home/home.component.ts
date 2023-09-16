@@ -5,7 +5,9 @@ import { TwitchChatService } from '../../services/twitch/twitch-chat.service';
 import { TwitchApiService } from '../../services/twitch/twitch-api.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { HelixUser } from '@twurple/api';
-import { prominent } from 'color.js';
+import { extractColors } from 'extract-colors'
+import { TwitchEmotesService } from '../../services/twitch/twitch-emotes.service';
+import i18n from '../../../../i18n/fr_FR.json';
 
 const preloadImage = async (url: string) => new Promise<void>(res => {
   const img = new Image();
@@ -19,6 +21,7 @@ const preloadImage = async (url: string) => new Promise<void>(res => {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
+  public url: string = window.location.href;
   public channelForm = new FormGroup({
     channel: new FormControl('',
       [
@@ -29,13 +32,21 @@ export class HomeComponent {
     ),
   })
 
+  public launchLabel = this.getRandomButtonLabel();
+
   public get channelControl() { return this.channelForm.controls.channel; }
 
   public channel?: HelixUser | null;
+  public channelEmotes: string[] = [];
+  private channelPalette = {
+    accent: '#FFF',
+    secondary: '#000',
+  }
 
   constructor(
     public emotesFall: EmotesFallService,
     private twitchApi: TwitchApiService,
+    private emotes: TwitchEmotesService,
     public chat: TwitchChatService,
   ) {
     this.emotesFall.start();
@@ -43,15 +54,12 @@ export class HomeComponent {
     this.channelForm.controls.channel.valueChanges
       .pipe(
         distinctUntilChanged(),
-        // 
         debounceTime(500),
       )
       .subscribe(async (channel) => {
         if (!channel) {
           this.channel = undefined;
           this.channelForm.controls.channel.updateValueAndValidity();
-          document.body.style.removeProperty('--accent-color');
-          document.body.style.removeProperty('--secondary-color');
           return;
         }
 
@@ -68,50 +76,58 @@ export class HomeComponent {
         // const input = document.getElementById('channel-input') as HTMLInputElement;
         // input.blur();
 
-        let [secondaryColor, accentColor] = await prominent(this.channel.profilePictureUrl, { amount: 2, format: 'hex', group: 50 }) as string[];
+        // get the accent color from the profile picture
+        const colors = await extractColors(this.channel.profilePictureUrl, {
+          crossOrigin: 'anonymous',
+          distance: 0.5,
+        });
 
-        // accentuate the contrast between the accent color and the secondary color
-        if (accentColor && secondaryColor) {
-          const accentColorLuminance = parseInt(accentColor.slice(1), 16);
-          const secondaryColorLuminance = parseInt(secondaryColor.slice(1), 16);
+        const [accentColor, secondaryColor] = colors.sort((a, b) => b.lightness - a.lightness);
 
-          console.log(accentColorLuminance, secondaryColorLuminance);
-
-          if (accentColorLuminance < secondaryColorLuminance) {
-            const temp = accentColor;
-            accentColor = secondaryColor;
-            secondaryColor = temp;
-          }
-
-          // const accentColorLuminanceDiff = secondaryColorLuminance - accentColorLuminance;
-          // if (accentColorLuminanceDiff < 100) {
-          //   // accentColor = '#' + (accentColorLuminance + 100).toString(16);
-          //   // increment each color by 100 (accentColor is an hex string where each 2 chars represent a color)
-          //   const { r, g, b } = {
-          //     r: parseInt(accentColor.slice(1, 3), 16),
-          //     g: parseInt(accentColor.slice(3, 5), 16),
-          //     b: parseInt(accentColor.slice(5, 7), 16),
-          //   };
-          //   accentColor = '#' + [r, g, b].map(c => Math.min(c + 100, 255).toString(16).padStart(2, '0')).join('');
-
-          // }
+        this.channelPalette = {
+          accent: accentColor?.hex ?? '#FFF',
+          secondary: secondaryColor?.hex ?? '#000',
         }
-
-        document.body.style.setProperty('--accent-color', accentColor as string);
-        document.body.style.setProperty('--secondary-color', secondaryColor as string);
 
         await preloadImage(this.channel.profilePictureUrl);
       });
+
+    this.chat.connected$.subscribe(async connected => {
+      if (connected) {
+        this.applyPalette();
+        this.channelEmotes = (await this.emotes.getChannelEmotes(this.channel!.name));
+      } else {
+        this.resetPalette();
+        this.channelEmotes = [];
+        this.launchLabel = this.getRandomButtonLabel();
+      }
+    });
   }
 
-  public onChannelSubmit() {
+  public getRandomButtonLabel() {
+    const labels = (i18n as any).launchButton.filter((label: string) => label !== this.launchLabel);
+    return labels[Math.floor(Math.random() * labels.length)];
+  }
+
+  public async onChannelSubmit() {
     const { channel } = this.channelForm.value;
     if (!channel) return;
 
-    this.chat.connectTo(channel);
+    await this.chat.connectTo(channel);
+    this.applyPalette();
   }
 
   public flush() {
     this.emotesFall.flush();
+  }
+
+  private applyPalette() {
+    document.body.style.setProperty('--accent-color', this.channelPalette.accent);
+    document.body.style.setProperty('--secondary-color', this.channelPalette.secondary);
+  }
+
+  private resetPalette() {
+    document.body.style.removeProperty('--accent-color');
+    document.body.style.removeProperty('--secondary-color');
   }
 }

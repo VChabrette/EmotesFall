@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ChatClient, ChatMessage, ChatRaidInfo } from '@twurple/chat';
-import { Observable, Subject, merge } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, merge } from 'rxjs';
 import { ChatService } from '../models/chat-service.interface';
 
 @Injectable({
@@ -19,6 +19,8 @@ export class TwitchChatService implements ChatService {
     if (!this.client) return false;
     return this.client.isConnected;
   }
+
+  public connected$ = new BehaviorSubject<boolean>(false);
 
   private async waitForConnection(): Promise<void> {
     if (!this.client) throw new Error('No client initialized')
@@ -56,6 +58,13 @@ export class TwitchChatService implements ChatService {
 
     await this.waitForConnection();
 
+    this.connected$.next(true);
+  }
+
+  public disconnect(): void {
+    if (!this.client) return;
+    this.client.quit();
+    this.connected$.next(false);
   }
 
   public onMessages(...patternsOrText: Array<string | RegExp>): Observable<ChatMessage> {
@@ -79,10 +88,5 @@ export class TwitchChatService implements ChatService {
 
   public onRaids(): Observable<{ raidUser: string, raidInfo: ChatRaidInfo }> {
     return this.raidSubject.asObservable();
-  }
-
-  public disconnect(): void {
-    if (!this.client) return;
-    this.client.quit();
   }
 }

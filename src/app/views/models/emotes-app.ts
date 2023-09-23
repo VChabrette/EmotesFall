@@ -1,6 +1,7 @@
-import { Application, ColorMatrixFilter, Graphics } from 'pixi.js';
+import { Application } from 'pixi.js';
 import { Body, Vec2, World, Circle, Box, Contact } from 'planck';
 import { EMOTE_SCALE, EmoteSprite } from './emote-sprite';
+import { SettingsService } from '../../shared/services/settings.service';
 
 type EmoteBody = { getUserData: () => EmoteSprite } & Body;
 
@@ -26,6 +27,10 @@ export class EmotesApp extends Application {
 		return bodies;
 	}
 
+	private friction = 0.5;
+	private restitution = 0.2;
+	private scale = 0.5;
+
 	private pixiPositionToPlank({ x, y }: { x: number, y: number }) {
 		//change Y origin point and direction
 		y = (y - this.height) * -1;
@@ -48,7 +53,7 @@ export class EmotesApp extends Application {
 		return { x, y };
 	}
 
-	constructor(private height: number, private width: number) {
+	constructor(private height: number, private width: number, private settings: SettingsService) {
 		super({ width, height, backgroundAlpha: 0 });
 
 		// create world bounds
@@ -56,6 +61,64 @@ export class EmotesApp extends Application {
 
 		// flush flushable emotes
 		this.plankWorld.on('pre-solve', (contact) => this.flushContact(contact));
+
+		settings.friction$.subscribe(friction => {
+			this.friction = friction;
+			this.updateFixtures();
+		});
+		settings.restitution$.subscribe(restitution => {
+			this.restitution = restitution;
+			this.updateFixtures();
+		});
+
+		settings.scale$.subscribe(scale => {
+			this.scale = scale;
+			this.updateSprites();
+		});
+
+		settings.gravity$.subscribe(gravity => {
+			this.plankWorld.setGravity(Vec2(0, gravity * -10));
+			this.updateBodies();
+		});
+	}
+
+	private updateFixtures() {
+		for (const body of this.emotesBodies) {
+			const fixture = body.getFixtureList();
+			if (!fixture) return;
+
+			fixture.setFriction(this.friction);
+			fixture.setRestitution(this.restitution);
+		}
+
+		this.updateContacts();
+	}
+
+	private updateSprites() {
+		for (const body of this.emotesBodies) {
+			const emoteSprite = body.getUserData();
+			emoteSprite.scale.set(this.scale);
+
+			const fixture = body.getFixtureList();
+			if (!fixture) return;
+
+			fixture.getShape().m_radius = emoteSprite.height / (this.pixelPerMeter * 2);
+		}
+
+		this.updateContacts();
+	}
+
+	private updateBodies() {
+		for (const body of this.emotesBodies) {
+			// refresh body to update position relative to gravity
+			body.setTransform(body.getPosition(), body.getAngle());
+		}
+	}
+
+	private updateContacts() {
+		for (let c = this.plankWorld.getContactList(); c; c = c.getNext()) {
+			c.update()
+		}
 	}
 
 	private createBounds() {
@@ -133,6 +196,9 @@ export class EmotesApp extends Application {
 		// contain x in 60% of the screen
 		xPercent *= 0.6;
 
+		// override emote scale with config value
+		emoteSprite.scale.set(this.scale);
+
 		// Compute emote X position from percentage of the screen width
 		const rightLimit = this.width - emoteSprite.width;
 		emoteSprite.position.set((rightLimit * .1) + rightLimit * xPercent, -emoteSprite.height);
@@ -146,13 +212,14 @@ export class EmotesApp extends Application {
 
 		emoteBody.createFixture({
 			shape: Circle(emoteSprite.height / (this.pixelPerMeter * 2)),
-			friction: 0.5,
-			restitution: 0.2,
+			friction: this.friction,
+			restitution: this.restitution,
 			filterCategoryBits: GROUND_COLLISION,
 			filterMaskBits: GROUND_COLLISION,
 		});
 
 		this.stage.addChild(emoteSprite);
+		if (this.settings.gravity === 0) this.nudge(emoteBody, -1); // HACK: avoid emotes to be stuck when gravity is 0
 
 		// Start emote decay
 		emoteSprite.startDecay(60_000, () => this.nudge(emoteBody, 3));

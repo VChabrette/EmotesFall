@@ -9,17 +9,9 @@
 			<img [src]="channel?.profilePictureUrl" alt="" srcset="" class="h-full rounded-l-full aspect-square bg-accent" [ngClass]="{'grayscale': !chat.isConnected }">
 		</form>
 		<button type="submit" (click)="onChannelSubmit()" class="p-10 py-3 text-lg italic rounded-r-full text-secondary bg-accent" [ngClass]="{'-translate-x-full': channelControl.invalid || chat.isConnected}">{{launchLabel}}</button>
-		<!-- <div class="p-10">
-			<button type="button" (click)="flush()">FLUSH</button>
-			<div class="flex items-center space-x-2 align-middle">
-				<input type="checkbox" id="checkbox" [(ngModel)]="emotesFall.animated" [ngModelOptions]="{standalone: true}"/>
-				<label for="checkbox" class="flex items-center cursor-pointer">
-					Animated
-				</label>
-			</div>
-		</div> -->
-		<div class="w-1/2 px-10 py-5 space-y-3 rounded-r-full text-secondary bg-accent" [ngClass]="{'-translate-x-full': !chat.isConnected }">
+		<div class="flex flex-col w-2/3 py-5 pl-10 pr-16 space-y-3 rounded-r-5xl text-secondary bg-accent" [ngClass]="{'-translate-x-full': !chat.isConnected }">
 			<button type="button" (click)="flush()" class="px-5 py-2 rounded-full bg-secondary text-accent">Vider l'écran</button>
+			<button type="button" (click)="test()" class="px-5 py-2 rounded-full bg-secondary text-accent">Tester</button>
 			<button type="button" (click)="chat.disconnect()" class="px-5 py-2 rounded-full bg-secondary text-accent">Déconnecter</button>
 			<div>{{url}}</div>
 			<div class="flex items-center space-x-2 align-middle">
@@ -31,4 +23,20 @@
 		</div>
 	</div>
 </div>
-<app-emotes-background [emotes]="channelEmotes" class="fixed top-0 left-0 z-0 w-full h-full opacity-50 grayscale"></app-emotes-background>
+<div class="fixed bottom-0 left-0 z-20 w-full">
+	<div [ngClass]="{'translate-y-full': !opened.settings}">
+		<div class="float-right mr-10 -translate-y-full text-secondary">
+			<button class="flex items-center justify-center p-2 space-x-6 align-middle rounded-t-xl bg-accent" title="settings"
+			(click)="opened.settings = !opened.settings">
+				<!-- cog svg -->
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" class="fill-current hover:animate-spin text-secondary">
+					<path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5s3.5 1.57 3.5 3.5s-1.57 3.5-3.5 3.5z" />
+				</svg>
+			</button>
+		</div>
+		<div class="w-full p-10 bg-accent">
+			<app-settings class="text-secondary"></app-settings>
+		</div>
+	</div>
+</div>
+<app-emotes-background [emotes]="channelEmotes" class="fixed top-0 left-0 z-0 w-full h-full opacity-50 pointer-events-none"></app-emotes-background>

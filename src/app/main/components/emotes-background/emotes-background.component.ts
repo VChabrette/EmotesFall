@@ -1,4 +1,5 @@
-import { Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-emotes-background',
@@ -7,6 +8,7 @@ import { Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/c
 })
 export class EmotesBackgroundComponent {
   private interval: NodeJS.Timeout | null = null;
+  private windowFocused$ = new BehaviorSubject<boolean>(true);
 
   @Input() set emotes(emotes: string[]) {
     let i = 0;
@@ -14,25 +16,27 @@ export class EmotesBackgroundComponent {
 
     if (!emotes.length) return;
     this.interval = setInterval(() => {
+      if (!this.windowFocused$.value) return;
+
       const emote = emotes[i % emotes.length];
 
       this.emotesImgs.push({
         url: emote,
-        left: `calc(${Math.random() * 80 + 10}% - 5vw)`,
+        left: `calc(${Math.random() * 90 + 5}% - 5vw)`,
       });
 
       i++;
 
       setTimeout(() => {
         this.emotesImgs.splice(0, 1);
-      }, 30000);
-    }, 2000);
+      }, 20000);
+    }, 1500);
   }
 
   public emotesImgs: { url: string, left: string }[] = [];
 
   constructor() {
-    // when emotes is updated, add emotes to the background
-
+    window.onfocus = () => this.windowFocused$.next(true);
+    window.onblur = () => this.windowFocused$.next(false);
   }
 }

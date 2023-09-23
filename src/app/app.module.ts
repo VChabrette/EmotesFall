@@ -9,6 +9,7 @@ import { SharedModule } from './shared/shared.module';
 import { MainModule } from './main/main.module';
 import { RouterModule } from '@angular/router';
 import { CoreModule } from './core/core.module';
+import { SettingsService } from './shared/services/settings.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,7 +25,9 @@ import { CoreModule } from './core/core.module';
       { path: '**', loadChildren: () => import('./main/main.module').then(m => m.MainModule) },
     ]),
   ],
-  providers: [],
+  providers: [
+    SettingsService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

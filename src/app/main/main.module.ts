@@ -10,12 +10,15 @@ import { TwitchApiService } from './services/twitch/twitch-api.service';
 import { TwitchChatService } from './services/twitch/twitch-chat.service';
 import { EmotesFallService } from './services/emotes-fall.service';
 import { EmotesBackgroundComponent } from './components/emotes-background/emotes-background.component';
+import { SettingsComponent } from './components/settings/settings.component';
+
 
 @NgModule({
 	declarations: [
 		MainComponent,
 		HomeComponent,
-  EmotesBackgroundComponent
+		EmotesBackgroundComponent,
+		SettingsComponent
 	],
 	imports: [
 		CommonModule,

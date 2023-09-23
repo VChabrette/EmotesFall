@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { TwitchChatService } from './services/twitch/twitch-chat.service';
 
 @Component({
   selector: 'app-main',

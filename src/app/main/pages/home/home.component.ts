@@ -8,6 +8,7 @@ import { HelixUser } from '@twurple/api';
 import { extractColors } from 'extract-colors'
 import { TwitchEmotesService } from '../../services/twitch/twitch-emotes.service';
 import i18n from '../../../../i18n/fr_FR.json';
+import { SharedStateService } from '../../../core/services/shared-state.service';
 
 const preloadImage = async (url: string) => new Promise<void>(res => {
   const img = new Image();
@@ -43,6 +44,10 @@ export class HomeComponent {
     secondary: '#000',
   }
 
+  public opened = {
+    'settings': false,
+  }
+
   constructor(
     public emotesFall: EmotesFallService,
     private twitchApi: TwitchApiService,
@@ -54,7 +59,7 @@ export class HomeComponent {
     this.channelForm.controls.channel.valueChanges
       .pipe(
         distinctUntilChanged(),
-        debounceTime(500),
+        debounceTime(250),
       )
       .subscribe(async (channel) => {
         if (!channel) {
@@ -83,6 +88,8 @@ export class HomeComponent {
         });
 
         const [accentColor, secondaryColor] = colors.sort((a, b) => b.lightness - a.lightness);
+        // Gérer le cas desentredeux (1 seule couleur sombre)
+        // Gérer le cas DJMiyuki (pète les yeux)
 
         this.channelPalette = {
           accent: accentColor?.hex ?? '#FFF',
@@ -119,6 +126,11 @@ export class HomeComponent {
 
   public flush() {
     this.emotesFall.flush();
+  }
+
+  public async test() {
+    const channelEmotes = await this.emotes.getChannelEmotes(this.channel!.name, this.emotesFall.animated);
+    this.emotesFall.sendEmotes(channelEmotes);
   }
 
   private applyPalette() {

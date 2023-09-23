@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { EventsService } from '../../core/services/events.service';
-import { SharedStateService } from '../../core/services/shared-state.service';
 import { TwitchChatService } from './twitch/twitch-chat.service';
 import { ChatMessage, ParsedMessageEmotePart, parseChatMessage } from '@twurple/chat';
 import { TwitchEmotesService } from './twitch/twitch-emotes.service';
@@ -15,7 +14,6 @@ export class EmotesFallService {
 
   constructor(
     private events: EventsService,
-    private state: SharedStateService,
     private chat: TwitchChatService,
     private emotes: TwitchEmotesService,
   ) {
@@ -34,10 +32,7 @@ export class EmotesFallService {
       const emotesURLs = await this.parseEmotes(message);
       if (!emotesURLs.length) return;
 
-      for (const url of emotesURLs) {
-        this.events.emit('emotes-fall:emote-added', { url });
-        await new Promise(resolve => setTimeout(resolve, 250));
-      }
+      this.sendEmotes(emotesURLs);
     });
 
     // On raid, add emotes from the raid user to the emotes-fall
@@ -63,6 +58,13 @@ export class EmotesFallService {
 
       this.flush();
     });
+  }
+
+  public async sendEmotes(emotesURLs: string[]) {
+    for (const url of emotesURLs) {
+      this.events.emit('emotes-fall:emote-added', { url });
+      await new Promise(resolve => setTimeout(resolve, 250));
+    }
   }
 
   private async parseEmotes(msg: ChatMessage): Promise<string[]> {

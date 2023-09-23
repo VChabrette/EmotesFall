@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "emote-fall",
+    "productName": "Emotes Fall",
     "version": "0.0.0"
   },
   "tauri": {
@@ -59,7 +59,7 @@
       {
         "fullscreen": false,
         "resizable": false,
-        "title": "Emote Fall",
+        "title": "Emotes Fall",
         "width": 500,
         "height": 900
       }

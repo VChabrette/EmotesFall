@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { EmotesApp } from '../models/emotes-app';
 import { EventsService } from '../../core/services/events.service';
 import { EmoteSprite } from '../models/emote-sprite';
+import { SettingsService } from '../../shared/services/settings.service';
 
 @Component({
   selector: 'app-widget',
@@ -14,11 +15,14 @@ export class WidgetComponent implements OnInit {
 
   private app!: EmotesApp;
 
-  constructor(private events: EventsService) { }
+  constructor(
+    private events: EventsService,
+    private settings: SettingsService,
+  ) { }
 
   ngOnInit() {
     const { innerHeight, innerWidth } = window;
-    this.app = new EmotesApp(innerHeight, innerWidth);
+    this.app = new EmotesApp(innerHeight, innerWidth, this.settings);
     this.canvas.nativeElement.appendChild(this.app.view as any);
 
     // on emote received

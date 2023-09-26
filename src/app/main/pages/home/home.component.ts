@@ -56,7 +56,6 @@ export class HomeComponent {
     private storage: StorageService,
     public chat: TwitchChatService,
   ) {
-    this.opened.toggle('settings', true);
     this.emotesFall.start();
 
     this.channelForm.controls.channel.valueChanges

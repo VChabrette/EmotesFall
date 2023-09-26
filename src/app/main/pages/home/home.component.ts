@@ -8,7 +8,8 @@ import { HelixUser } from '@twurple/api';
 import { extractColors } from 'extract-colors'
 import { TwitchEmotesService } from '../../services/twitch/twitch-emotes.service';
 import i18n from '../../../../i18n/fr_FR.json';
-import { SharedStateService } from '../../../core/services/shared-state.service';
+import { Toggler } from '../../../shared/models/toggler';
+import { StorageService } from '../../../core/services/storage.service';
 
 const preloadImage = async (url: string) => new Promise<void>(res => {
   const img = new Image();
@@ -22,7 +23,6 @@ const preloadImage = async (url: string) => new Promise<void>(res => {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  public url: string = window.location.href;
   public channelForm = new FormGroup({
     channel: new FormControl('',
       [
@@ -44,16 +44,19 @@ export class HomeComponent {
     secondary: '#000',
   }
 
-  public opened = {
+  public opened = new Toggler({
     'settings': false,
-  }
+    'link': false,
+  })
 
   constructor(
     public emotesFall: EmotesFallService,
     private twitchApi: TwitchApiService,
     private emotes: TwitchEmotesService,
+    private storage: StorageService,
     public chat: TwitchChatService,
   ) {
+    this.opened.toggle('settings', true);
     this.emotesFall.start();
 
     this.channelForm.controls.channel.valueChanges
@@ -61,43 +64,7 @@ export class HomeComponent {
         distinctUntilChanged(),
         debounceTime(250),
       )
-      .subscribe(async (channel) => {
-        if (!channel) {
-          this.channel = undefined;
-          this.channelForm.controls.channel.updateValueAndValidity();
-          return;
-        }
-
-        const foundChannel = await this.twitchApi.getUserByName(channel);
-        if (foundChannel?.name !== this.channelControl.value!.toLowerCase()) return; // user was still typing
-
-        this.channel = foundChannel;
-        this.channelForm.controls.channel.updateValueAndValidity();
-
-        if (!this.channel) return;
-        this.channelControl.setValue(this.channel?.displayName!, { emitEvent: false })
-
-        // unfocus the input
-        // const input = document.getElementById('channel-input') as HTMLInputElement;
-        // input.blur();
-
-        // get the accent color from the profile picture
-        const colors = await extractColors(this.channel.profilePictureUrl, {
-          crossOrigin: 'anonymous',
-          distance: 0.5,
-        });
-
-        const [accentColor, secondaryColor] = colors.sort((a, b) => b.lightness - a.lightness);
-        // Gérer le cas desentredeux (1 seule couleur sombre)
-        // Gérer le cas DJMiyuki (pète les yeux)
-
-        this.channelPalette = {
-          accent: accentColor?.hex ?? '#FFF',
-          secondary: secondaryColor?.hex ?? '#000',
-        }
-
-        await preloadImage(this.channel.profilePictureUrl);
-      });
+      .subscribe(c => this.loadChannel(c));
 
     this.chat.connected$.subscribe(async connected => {
       if (connected) {
@@ -109,6 +76,51 @@ export class HomeComponent {
         this.launchLabel = this.getRandomButtonLabel();
       }
     });
+
+    const savedChannel = this.storage.get<string>('channel');
+    if (!savedChannel || typeof savedChannel !== 'string') return;
+
+    this.channelControl.setValue(this.storage.get<string>('channel'), { emitEvent: true });
+  }
+
+  private async loadChannel(channel: string | null) {
+    if (!channel) {
+      this.channel = undefined;
+      this.storage.set<string>('channel', undefined);
+      this.channelForm.controls.channel.updateValueAndValidity();
+      return;
+    }
+
+    const foundChannel = await this.twitchApi.getUserByName(channel);
+    if (foundChannel?.name !== this.channelControl.value!.toLowerCase()) return; // user was still typing
+
+    this.channel = foundChannel;
+    this.channelForm.controls.channel.updateValueAndValidity();
+
+    if (!this.channel) return;
+    this.channelControl.setValue(this.channel?.displayName!, { emitEvent: false })
+    this.storage.set<string>('channel', this.channel?.displayName!);
+
+    // unfocus the input
+    // const input = document.getElementById('channel-input') as HTMLInputElement;
+    // input.blur();
+
+    // get the accent color from the profile picture
+    const colors = await extractColors(this.channel.profilePictureUrl, {
+      crossOrigin: 'anonymous',
+      distance: 0.5,
+    });
+
+    const [accentColor, secondaryColor] = colors.sort((a, b) => b.lightness - a.lightness);
+    // Gérer le cas desentredeux (1 seule couleur sombre)
+    // Gérer le cas DJMiyuki (pète les yeux)
+
+    this.channelPalette = {
+      accent: accentColor?.hex ?? '#FFF',
+      secondary: secondaryColor?.hex ?? '#000',
+    }
+
+    await preloadImage(this.channel.profilePictureUrl);
   }
 
   public getRandomButtonLabel() {

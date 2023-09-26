@@ -1,10 +1,15 @@
-input[type="range"]::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	appearance: none;
-	height: 0.8rem;
-	width: 0.8rem;
-	cursor: ew-resize;
-	background: var(--accent-color);
-	overflow: hidden;
-	border-radius: 50%;
+input[type="range"] {
+	height: 1rem;
+	padding: calc(0.2rem);
+
+	&::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		height: .8rem;
+		width: .8rem;
+		cursor: ew-resize;
+		background: var(--accent-color);
+		overflow: hidden;
+		border-radius: 100%;
+	}
 }

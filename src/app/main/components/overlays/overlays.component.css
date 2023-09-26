@@ -1,0 +1,7 @@
+.bar {
+	transition: 500ms;
+}
+
+.bar.closed {
+	margin-top: -8rem;
+}

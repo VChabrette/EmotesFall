@@ -11,6 +11,7 @@ import { TwitchChatService } from './services/twitch/twitch-chat.service';
 import { EmotesFallService } from './services/emotes-fall.service';
 import { EmotesBackgroundComponent } from './components/emotes-background/emotes-background.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { OverlaysComponent } from './components/overlays/overlays.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { SettingsComponent } from './components/settings/settings.component';
 		MainComponent,
 		HomeComponent,
 		EmotesBackgroundComponent,
-		SettingsComponent
+		SettingsComponent,
+		OverlaysComponent,
 	],
 	imports: [
 		CommonModule,

@@ -27,7 +27,7 @@ export class StorageService {
 		return null;
 	}
 
-	public async set(key: string, val?: any) {
+	public async set<T>(key: string, val?: T) {
 		if (JSON.stringify(this.get(key)) === JSON.stringify(val)) return; // Only register if value is modified
 
 		if (typeof val === 'undefined' || val === null) this.data.delete(key)
@@ -51,6 +51,7 @@ export class StorageService {
 		if (!dataFileExists) await this.saveData();
 
 		const content = await readTextFile(FILENAME, { dir: this.path });
+		console.log(content);
 		if (!content) this.data = new Map();
 
 		const entries = Object.entries(JSON.parse(content));
@@ -65,7 +66,7 @@ export class StorageService {
 		const toSave: { [key: string]: unknown } = {};
 		for (const [key, value] of this.data.entries()) { toSave[key] = value }
 
-		console.log('Saving data', toSave);
+		console.log('Saving data', toSave, JSON.stringify(toSave));
 
 		await writeFile({ path: FILENAME, contents: JSON.stringify(toSave) }, { dir: this.path })
 	}

@@ -47,10 +47,10 @@ export class SettingsService {
     private state: SharedStateService,
   ) {
     // init values in backend state
-    this.scale = this.storage.get('scale') || 0.5;
-    this.friction = this.storage.get('friction') || 0.5;
-    this.restitution = this.storage.get('restitution') || 0.2;
-    this.gravity = this.storage.get('gravity') || 1;
+    this.scale = this.storage.get('scale') !== null ? this.storage.get('scale')! : 0.5;
+    this.friction = this.storage.get('friction') !== null ? this.storage.get('friction')! : 0.5;
+    this.restitution = this.storage.get('restitution') !== null ? this.storage.get('restitution')! : 0.2;
+    this.gravity = this.storage.get('gravity') !== null ? this.storage.get('gravity')! : 1;
 
     // subscribe to changes
     this.scale$.subscribe(val => this._scale = val);

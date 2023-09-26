@@ -216,6 +216,7 @@ export class EmotesApp extends Application {
 			restitution: this.restitution,
 			filterCategoryBits: GROUND_COLLISION,
 			filterMaskBits: GROUND_COLLISION,
+			density: 1,
 		});
 
 		this.stage.addChild(emoteSprite);

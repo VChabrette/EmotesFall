@@ -12,6 +12,7 @@ export class EmoteSprite extends AnimatedSprite {
 	// prevent calling constructor directly
 	private constructor(texture: Texture[], public url: string) {
 		super(texture);
+		this.anchor.set(0.5);
 
 		this.animationSpeed = 1 / 4;
 		if (this.textures.length > 1) this.play();

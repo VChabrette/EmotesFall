@@ -122,20 +122,19 @@ export class EmotesApp extends Application {
 	}
 
 	private createBounds() {
-		// HACK: Wtf man, I don't understand shit about those units
-		const groundBody = this.plankWorld.createBody({ position: Vec2(0, (0.5 * EMOTE_SCALE)), userData: 'ground' });
+		const groundBody = this.plankWorld.createBody({ position: Vec2(0, 0), userData: 'ground' });
 		groundBody.createFixture({
 			shape: Box(this.width / this.pixelPerMeter, 0),
 			filterCategoryBits: GROUND_COLLISION,
 			filterMaskBits: GROUND_COLLISION,
 		});
 
-		const leftWallBody = this.plankWorld.createBody({ position: Vec2(-1 - (0.5 * EMOTE_SCALE), 0) });
+		const leftWallBody = this.plankWorld.createBody({ position: Vec2(-1, 0) });
 		leftWallBody.createFixture({
 			shape: Box(1, this.height / this.pixelPerMeter),
 		});
 
-		const rightWallBody = this.plankWorld.createBody({ position: Vec2(this.width / this.pixelPerMeter + (0.5 * EMOTE_SCALE), 0) });
+		const rightWallBody = this.plankWorld.createBody({ position: Vec2(this.width / this.pixelPerMeter + 1, 0) });
 		rightWallBody.createFixture({
 			shape: Box(1, this.height / this.pixelPerMeter),
 		});

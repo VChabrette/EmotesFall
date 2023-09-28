@@ -44,10 +44,7 @@ export class HomeComponent {
     secondary: '#000',
   }
 
-  public opened = new Toggler({
-    'settings': true,
-    'link': false,
-  })
+  public opened = new Toggler(['settings', 'link']);
 
   constructor(
     public emotesFall: EmotesFallService,

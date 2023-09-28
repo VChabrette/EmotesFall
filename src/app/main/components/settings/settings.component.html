@@ -1,26 +1,39 @@
-<form [formGroup]="settingsForm" class="flex flex-col justify-center w-full">
-	<div class="flex items-center space-x-2 align-middle">
-		<input type="range" min="0" max="1" step="0.1" id="friction" formControlName="friction" class="rounded-full appearance-none bg-secondary"/>
-		<label for="friction" class="flex items-center cursor-pointer">
-			Friction
-		</label>
+<form [formGroup]="settingsForm" class="flex flex-col gap-6">
+	<div class="space-y-2">
+		<p class="text-lg">Paramètres généraux</p>
+		<div class="flex items-center space-x-2">
+			<input
+				type="checkbox" id="animated" formControlName="animated"
+				class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100" />
+			<label for="animated" class="text-secondary">Emotes animées</label>
+		</div>
 	</div>
-	<div class="flex items-center space-x-2 align-middle">
-		<input type="range" min="0" max="1" step="0.1" id="restitution" formControlName="restitution" class="h-4 rounded-full appearance-none bg-secondary"/>
-		<label for="restitution" class="flex items-center cursor-pointer">
-			Restitution
-		</label>
-	</div>
-	<div class="flex items-center space-x-2 align-middle">
-		<input type="range" min="0.1" max="1" step="0.05" id="scale" formControlName="scale" class="h-4 rounded-full appearance-none bg-secondary"/>
-		<label for="scale" class="flex items-center cursor-pointer">
-			Scale
-		</label>
-	</div>
-	<div class="flex items-center space-x-2 align-middle">
-		<input type="range" min="0" max="2" step="0.1" id="gravity" formControlName="gravity" class="h-4 rounded-full appearance-none bg-secondary"/>
-		<label for="gravity" class="flex items-center cursor-pointer">
-			Gravity
-		</label>
+	<div class="space-y-2">
+		<p class="text-lg">Propriétés physiques</p>
+		<div class="grid justify-center w-full grid-cols-2 gap-x-10">
+			<div class="flex items-center space-x-2 align-middle">
+				<input type="range" min="0" max="1" step="0.1" id="friction" formControlName="friction" class="rounded-full appearance-none bg-secondary"/>
+				<label for="friction" class="flex items-center cursor-pointer">
+					Friction
+				</label>
+			</div>
+			<div class="flex items-center space-x-2 align-middle">
+				<input type="range" min="0" max="1" step="0.1" id="restitution" formControlName="restitution" class="h-4 rounded-full appearance-none bg-secondary"/>
+				<label for="restitution" class="flex items-center cursor-pointer">
+					Rebond
+				</label>
+			</div><div class="flex items-center space-x-2 align-middle">
+				<input type="range" min="0" max="2" step="0.1" id="gravity" formControlName="gravity" class="h-4 rounded-full appearance-none bg-secondary" />
+				<label for="gravity" class="flex items-center cursor-pointer">
+					Gravité
+				</label>
+			</div>
+			<div class="flex items-center space-x-2 align-middle">
+				<input type="range" min="0.1" max="1" step="0.05" id="scale" formControlName="scale" class="h-4 rounded-full appearance-none bg-secondary"/>
+				<label for="scale" class="flex items-center cursor-pointer">
+					Taille
+				</label>
+			</div>
+		</div>
 	</div>
 </form>

@@ -219,10 +219,10 @@ export class EmotesApp extends Application {
 		});
 
 		this.stage.addChild(emoteSprite);
-		if (this.settings.gravity === 0) this.nudge(emoteBody, -1); // HACK: avoid emotes to be stuck when gravity is 0
+		if (this.settings.gravity === 0) this.nudge(emoteBody, -0.1); // HACK: avoid emotes to be stuck when gravity is 0
 
 		// Start emote decay
-		emoteSprite.startDecay(60_000, () => this.nudge(emoteBody, 3));
+		emoteSprite.startDecay(60_000, () => this.nudge(emoteBody, 0.3));
 	}
 
 	public flush() {

@@ -9,14 +9,21 @@ export class Toggler extends Map<string, boolean> {
 		return [...this.values()].some(v => v);
 	}
 
-	constructor(params?: { [key: string]: boolean }) {
+	constructor(params?: { [key: string]: boolean } | string[]) {
 		super();
 
 		if (!params) return;
 
-		for (const [key, value] of Object.entries(params)) {
-			this._set(key, value);
+		if (Array.isArray(params)) {
+			for (const key of params) {
+				this._set(key, false);
+			}
+		} else {
+			for (const [key, value] of Object.entries(params)) {
+				this._set(key, value);
+			}
 		}
+
 	}
 
 	public toggle(key: string, value?: boolean): this {

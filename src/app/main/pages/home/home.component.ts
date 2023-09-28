@@ -45,7 +45,7 @@ export class HomeComponent {
   }
 
   public opened = new Toggler({
-    'settings': false,
+    'settings': true,
     'link': false,
   })
 

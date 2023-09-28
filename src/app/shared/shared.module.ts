@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [],
-  providers: [
-  ],
+  providers: [],
   imports: [
     CommonModule
   ]

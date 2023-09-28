@@ -3,6 +3,7 @@ import { EventsService } from '../../core/services/events.service';
 import { TwitchChatService } from './twitch/twitch-chat.service';
 import { ChatMessage, ParsedMessageEmotePart, parseChatMessage } from '@twurple/chat';
 import { TwitchEmotesService } from './twitch/twitch-emotes.service';
+import { SettingsService } from '../../shared/services/settings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,12 +11,13 @@ import { TwitchEmotesService } from './twitch/twitch-emotes.service';
 export class EmotesFallService {
   private started = false;
 
-  public animated = true;
+  public get animated() { return this.settings.animated }
 
   constructor(
     private events: EventsService,
     private chat: TwitchChatService,
     private emotes: TwitchEmotesService,
+    private settings: SettingsService,
   ) {
     this.initListeners();
   }

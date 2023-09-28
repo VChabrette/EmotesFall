@@ -36,4 +36,8 @@ export class WidgetComponent implements OnInit {
     this.events.on('emotes-fall:flush')
       .subscribe(() => this.app.flush());
   }
+
+  public toggleBg() {
+    this.canvas.nativeElement.classList.toggle('bg');
+  }
 }

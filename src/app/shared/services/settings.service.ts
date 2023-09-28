@@ -42,21 +42,40 @@ export class SettingsService {
   }
   public get gravity$() { return this.get$<number>('gravity') }
 
+  // animated
+  private _animated = true;
+  public get animated() { return this._animated }
+  public set animated(val) {
+    this._animated = val;
+    this.setValue('animated', val)
+  }
+  public get animated$() { return this.get$<boolean>('animated') }
+
+  // 
+
   constructor(
     private storage: StorageService,
     private state: SharedStateService,
   ) {
+    this.init()
+  }
+
+  private async init() {
     // init values in backend state
-    this.scale = this.storage.get('scale') !== null ? this.storage.get('scale')! : 0.5;
-    this.friction = this.storage.get('friction') !== null ? this.storage.get('friction')! : 0.5;
-    this.restitution = this.storage.get('restitution') !== null ? this.storage.get('restitution')! : 0.2;
-    this.gravity = this.storage.get('gravity') !== null ? this.storage.get('gravity')! : 1;
+    if (this.storage.isInitialized) {
+      this.scale = this.storage.get('scale') !== null ? this.storage.get('scale')! : 0.5;
+      this.friction = this.storage.get('friction') !== null ? this.storage.get('friction')! : 0.5;
+      this.restitution = this.storage.get('restitution') !== null ? this.storage.get('restitution')! : 0.2;
+      this.gravity = this.storage.get('gravity') !== null ? this.storage.get('gravity')! : 1;
+      this.animated = this.storage.get('animated') !== null ? this.storage.get('animated')! : true;
+    }
 
     // subscribe to changes
     this.scale$.subscribe(val => this._scale = val);
     this.friction$.subscribe(val => this._friction = val);
     this.restitution$.subscribe(val => this._restitution = val);
     this.gravity$.subscribe(val => this._gravity = val);
+    this.animated$.subscribe(val => this._animated = val);
   }
 
   private setValue(key: string, val: any) {

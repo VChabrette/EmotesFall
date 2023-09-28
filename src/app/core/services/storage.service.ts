@@ -3,6 +3,7 @@ import { BaseDirectory, createDir, readDir, readTextFile, writeFile } from '@tau
 import { debounceTime, Subject } from 'rxjs';
 
 const FILENAME = '.persistent_data';
+const TAURI_ACCESSIBLE = !!window.__TAURI_IPC__;
 
 const clone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
@@ -16,11 +17,15 @@ export class StorageService {
 
 	private path = BaseDirectory.AppData;
 
+	public isInitialized = false;
+
 	constructor() {
 		this.save$.pipe(debounceTime(1000)).subscribe(() => this.saveData());
 	}
 
 	public get<T = any>(key: string): T | null {
+		if (!TAURI_ACCESSIBLE) throw new Error('Tauri is not accessible, cannot get data from storage');
+
 		// return a clone of the value to prevent modification of the original value
 		if (typeof this.data.get(key) !== 'undefined') return clone(this.data.get(key));
 
@@ -28,6 +33,8 @@ export class StorageService {
 	}
 
 	public async set<T>(key: string, val?: T) {
+		if (!TAURI_ACCESSIBLE) throw new Error('Tauri is not accessible, cannot set data in storage');
+
 		if (JSON.stringify(this.get(key)) === JSON.stringify(val)) return; // Only register if value is modified
 
 		if (typeof val === 'undefined' || val === null) this.data.delete(key)
@@ -37,9 +44,10 @@ export class StorageService {
 	}
 
 	public async init() {
-		if (!window.__TAURI_IPC__) return;
+		if (!TAURI_ACCESSIBLE) return;
 		// resolve the path to the data folder
 		await this.loadData();
+		this.isInitialized = true;
 	}
 
 	private async loadData() {
@@ -66,7 +74,7 @@ export class StorageService {
 		const toSave: { [key: string]: unknown } = {};
 		for (const [key, value] of this.data.entries()) { toSave[key] = value }
 
-		console.log('Saving data', toSave, JSON.stringify(toSave));
+		console.log('Saving data', toSave);
 
 		await writeFile({ path: FILENAME, contents: JSON.stringify(toSave) }, { dir: this.path })
 	}

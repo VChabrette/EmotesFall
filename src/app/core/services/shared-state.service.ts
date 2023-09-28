@@ -39,7 +39,7 @@ export class SharedStateService {
 
 					// if key is not in state, set it to null
 					for (const key in this.elements) {
-						if (state[key] !== undefined) return;
+						if (state[key] !== undefined) continue;
 
 						this.set(key, null);
 					}

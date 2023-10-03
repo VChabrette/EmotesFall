@@ -11,6 +11,7 @@ import { EmotesFallService } from '../../services/emotes-fall.service';
 export class SettingsComponent {
   public settingsForm = new FormGroup({
     animated: new FormControl(this.settings.animated),
+    fpsGuard: new FormControl(this.settings.fpsGuard),
     friction: new FormControl(this.settings.friction, [Validators.required, Validators.min(0), Validators.max(1)]),
     restitution: new FormControl(this.settings.restitution, [Validators.required, Validators.min(0), Validators.max(1)]),
     scale: new FormControl(this.settings.scale, [Validators.required, Validators.min(0.1), Validators.max(1)]),
@@ -23,6 +24,7 @@ export class SettingsComponent {
   ) {
     this.settingsForm.valueChanges.subscribe(values => {
       this.settings.animated = values.animated as boolean;
+      this.settings.fpsGuard = values.fpsGuard as boolean;
       this.settings.friction = values.friction as number;
       this.settings.restitution = values.restitution as number;
       this.settings.scale = values.scale as number;

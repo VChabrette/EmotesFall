@@ -27,6 +27,10 @@ export class EmotesApp extends Application {
 		return bodies;
 	}
 
+	private get oldestEmoteBodies(): EmoteBody[] {
+		return this.emotesBodies.sort((a, b) => a.getUserData().createdAt.getTime() - b.getUserData().createdAt.getTime());
+	}
+
 	private friction = 0.5;
 	private restitution = 0.2;
 	private scale = 0.5;
@@ -80,7 +84,58 @@ export class EmotesApp extends Application {
 			this.plankWorld.setGravity(Vec2(0, gravity * -10));
 			this.updateBodies();
 		});
+
+		this.ticker.add(() => {
+			this.plankWorld.step(this.ticker.elapsedMS / 1000);
+
+			for (const body of this.emotesBodies) {
+				const emoteSprite = body.getUserData();
+
+				const po = this.plankPositionToPixi(body.getPosition());
+
+				emoteSprite.position.set(po.x, po.y);
+				emoteSprite.rotation = body.getAngle() * -1;
+
+				const remove = () => {
+					console.log('remove');
+					this.stage.removeChild(emoteSprite);
+					body.setActive(false); // HACK
+					this.plankWorld.destroyBody(body);
+				}
+
+				// if body is out of bounds, remove it
+				if (
+					body.getPosition().x < -1 // left
+					|| body.getPosition().x > this.width / this.pixelPerMeter + 1 // right
+					|| body.getPosition().y < -1 // bottom
+				) {
+					remove();
+				}
+
+				// if body is above the screen and exists for more than 10 seconds, remove it
+				if (body.getPosition().y > this.height / this.pixelPerMeter + 1 && emoteSprite.createdAt.getTime() + 10_000 < Date.now()) {
+					remove();
+				}
+
+			}
+
+			if (this.settings.fpsGuard) this.controlFPS();
+		});
 	}
+
+	private controlFPS() {
+		if (this.ticker.FPS >= 10) return;
+
+		// flush 10% of the oldest emotes
+		const emotesToFlush = Math.floor(this.oldestEmoteBodies.length * 0.1);
+
+		console.warn(`FPS is too low (${this.ticker.FPS}), flushing ${emotesToFlush} emotes`);
+
+		this.oldestEmoteBodies.slice(0, emotesToFlush).forEach(body => {
+			body.getUserData().flush(() => this.nudge(body, -1)); // Get the emote out of the screen as fast as possible
+		});
+	}
+
 
 	private updateFixtures() {
 		for (const body of this.emotesBodies) {
@@ -137,27 +192,6 @@ export class EmotesApp extends Application {
 		const rightWallBody = this.plankWorld.createBody({ position: Vec2(this.width / this.pixelPerMeter + 1, 0) });
 		rightWallBody.createFixture({
 			shape: Box(1, this.height / this.pixelPerMeter),
-		});
-
-		// emotes cleaning
-		this.ticker.add(() => {
-			this.plankWorld.step(this.ticker.elapsedMS / 1000);
-
-			for (const body of this.emotesBodies) {
-				const emoteSprite = body.getUserData();
-
-				const po = this.plankPositionToPixi(body.getPosition());
-
-				emoteSprite.position.set(po.x, po.y);
-				emoteSprite.rotation = body.getAngle() * -1;
-
-				// if body is out of bounds, remove it
-				if (body.getPosition().x < -1 || body.getPosition().x > this.width / this.pixelPerMeter + 1 || body.getPosition().y < -1) {
-					this.stage.removeChild(emoteSprite);
-					body.setActive(false); // HACK
-					this.plankWorld.destroyBody(body);
-				}
-			}
 		});
 	}
 

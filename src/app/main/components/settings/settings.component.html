@@ -1,11 +1,19 @@
-<form [formGroup]="settingsForm" class="flex flex-col gap-6">
+<form [formGroup]="settingsForm" class="flex flex-col w-full gap-6">
 	<div class="space-y-2">
 		<p class="text-lg">Paramètres généraux</p>
-		<div class="flex items-center space-x-2">
-			<input
-				type="checkbox" id="animated" formControlName="animated"
-				class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100" />
-			<label for="animated" class="text-secondary">Emotes animées</label>
+		<div class="grid justify-center w-full grid-cols-2 gap-x-10">
+			<div class="flex items-center space-x-2">
+				<input
+					type="checkbox" id="animated" formControlName="animated"
+					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100" />
+				<label for="animated" class="text-secondary">Emotes animées</label>
+			</div>
+			<div class="flex items-center space-x-2">
+				<input
+					type="checkbox" id="fpsGuard" formControlName="fpsGuard"
+					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100" />
+				<label for="fpsGuard" class="text-secondary">Contrôle des FPS</label>
+			</div>
 		</div>
 	</div>
 	<div class="space-y-2">

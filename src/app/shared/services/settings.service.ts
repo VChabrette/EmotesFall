@@ -7,7 +7,7 @@ import { StorageService } from '../../core/services/storage.service';
 })
 export class SettingsService {
   // scale
-  private _scale!: number;
+  private _scale: number = 0.5;
   public get scale() { return this._scale }
   public set scale(val) {
     this._scale = val;
@@ -16,7 +16,7 @@ export class SettingsService {
   public get scale$() { return this.get$<number>('scale') }
 
   // friction
-  private _friction!: number;
+  private _friction: number = 0.5;
   public get friction() { return this._friction }
   public set friction(val) {
     this._friction = val;
@@ -25,7 +25,7 @@ export class SettingsService {
   public get friction$() { return this.get$<number>('friction') }
 
   // restitution
-  private _restitution!: number;
+  private _restitution: number = 0.2;
   public get restitution() { return this._restitution }
   public set restitution(val) {
     this._restitution = val;
@@ -34,7 +34,7 @@ export class SettingsService {
   public get restitution$() { return this.get$<number>('restitution') }
 
   // gravity
-  private _gravity!: number;
+  private _gravity: number = 1;
   public get gravity() { return this._gravity }
   public set gravity(val) {
     this._gravity = val;
@@ -51,7 +51,14 @@ export class SettingsService {
   }
   public get animated$() { return this.get$<boolean>('animated') }
 
-  // 
+  // fpsGuard
+  private _fpsGuard = true;
+  public get fpsGuard() { return this._fpsGuard }
+  public set fpsGuard(val) {
+    this._fpsGuard = val;
+    this.setValue('fpsGuard', val)
+  }
+  public get fpsGuard$() { return this.get$<boolean>('fpsGuard') }
 
   constructor(
     private storage: StorageService,
@@ -61,21 +68,34 @@ export class SettingsService {
   }
 
   private async init() {
-    // init values in backend state
-    if (this.storage.isInitialized) {
-      this.scale = this.storage.get('scale') !== null ? this.storage.get('scale')! : 0.5;
-      this.friction = this.storage.get('friction') !== null ? this.storage.get('friction')! : 0.5;
-      this.restitution = this.storage.get('restitution') !== null ? this.storage.get('restitution')! : 0.2;
-      this.gravity = this.storage.get('gravity') !== null ? this.storage.get('gravity')! : 1;
-      this.animated = this.storage.get('animated') !== null ? this.storage.get('animated')! : true;
-    }
+    Object.keys(this)
+      .filter(key => key.startsWith('_'))
+      .forEach(key => {
+        const $this = this as any;
 
-    // subscribe to changes
-    this.scale$.subscribe(val => this._scale = val);
-    this.friction$.subscribe(val => this._friction = val);
-    this.restitution$.subscribe(val => this._restitution = val);
-    this.gravity$.subscribe(val => this._gravity = val);
-    this.animated$.subscribe(val => this._animated = val);
+        const settingKey = key.slice(1); // remove the _
+        const defaultVal = $this[key];
+
+        console.log('Loading setting', settingKey);
+        if (this.storage.isInitialized) {
+          const val = this.storage.get(settingKey);
+          if (val !== null) {
+            $this[settingKey] = val;
+            console.log('- Loaded ' + key + ' from storage: ' + val);
+          } else if (typeof defaultVal !== 'undefined') {
+            this.setValue(settingKey, defaultVal);
+            console.log('- Loaded ' + key + ' from default value' + defaultVal);
+          }
+        }
+
+        const subjectKey = key.slice(1) + '$';
+        const subject = $this[subjectKey];
+
+        console.log('- Subscribe to ' + subjectKey + ' to setting ' + key);
+        subject.subscribe((val: any) => {
+          $this[key] = val;
+        });
+      });
   }
 
   private setValue(key: string, val: any) {

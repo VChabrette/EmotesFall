@@ -9,6 +9,9 @@ export class EmoteSprite extends AnimatedSprite {
 	public createdAt = new Date();
 	public flushed = false;
 
+	private counter = 0;
+	private flushInterval: NodeJS.Timeout | null = null;
+
 	// prevent calling constructor directly
 	private constructor(texture: Texture[], public url: string) {
 		super(texture);
@@ -38,33 +41,40 @@ export class EmoteSprite extends AnimatedSprite {
 		});
 	}
 
-	public startDecay(duration: number, onFlush: () => void) {
+	public startDecay(duration: number, onFlush?: () => void) {
 		// add grayscale filter to the emote
 		const filter = new ColorMatrixFilter();
 		this.filters = [filter];
 
 		// flush emote after 60 seconds, and desaturate progressively every 100ms in the last 10% of the time
 		let step = 200;
-		let counter = 0, max = duration / step, decayTime = 1 / 12;
-		const interval = setInterval(() => {
+		let max = duration / step, decayTime = 1 / 12;
+		this.flushInterval = setInterval(() => {
 			if (this.flushed) {
-				clearInterval(interval);
+				clearInterval(this.flushInterval!);
 				return;
 			}
 
-			if (counter >= max * (1 - decayTime)) {
-				const saturation = (counter / max - (1 - decayTime)) / decayTime;
+			if (this.counter >= max * (1 - decayTime)) {
+				const saturation = (this.counter / max - (1 - decayTime)) / decayTime;
 				filter.saturate(-saturation, true);
 			}
 
-			if (counter >= max) {
-				clearInterval(interval);
-				this.flushed = true;
-
-				onFlush();
+			if (this.counter >= max) {
+				this.flush(onFlush);
 			}
 
-			counter++;
+			this.counter++;
 		}, step);
 	}
+
+	public flush(onFlush?: () => void) {
+		if (this.flushed) return;
+
+		if (this.flushInterval) clearInterval(this.flushInterval);
+		this.flushed = true;
+
+		if (onFlush) onFlush();
+	};
+
 }

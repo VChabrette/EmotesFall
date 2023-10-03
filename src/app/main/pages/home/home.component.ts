@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EmotesFallService } from '../../services/emotes-fall.service';
-import { TwitchChatService } from '../../services/twitch/twitch-chat.service';
-import { TwitchApiService } from '../../services/twitch/twitch-api.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { HelixUser } from '@twurple/api';
 import { extractColors } from 'extract-colors'
+
+import { EmotesFallService } from '../../services/emotes-fall.service';
+import { TwitchChatService } from '../../services/twitch/twitch-chat.service';
+import { TwitchApiService } from '../../services/twitch/twitch-api.service';
 import { TwitchEmotesService } from '../../services/twitch/twitch-emotes.service';
-import i18n from '../../../../i18n/fr_FR.json';
-import { Toggler } from '../../../shared/models/toggler';
 import { StorageService } from '../../../core/services/storage.service';
+import { Toggler } from '../../../shared/models/toggler';
+import i18n from '../../../../i18n/fr_FR.json';
 
 const preloadImage = async (url: string) => new Promise<void>(res => {
   const img = new Image();
@@ -102,18 +103,26 @@ export class HomeComponent {
     // input.blur();
 
     // get the accent color from the profile picture
-    const colors = await extractColors(this.channel.profilePictureUrl, {
+    const colors = (await extractColors(this.channel.profilePictureUrl, {
       crossOrigin: 'anonymous',
-      distance: 0.5,
-    });
+      distance: 0.4,
+      hueDistance: 0.3,
+      lightnessDistance: 0.3,
+    })).filter(c => c.intensity < 0.9); // Prevent tearing the eyes with too bright colors
 
-    const [accentColor, secondaryColor] = colors.sort((a, b) => b.lightness - a.lightness);
-    // Gérer le cas desentredeux (1 seule couleur sombre)
-    // Gérer le cas DJMiyuki (pète les yeux)
+    const [accentColor, ...endColors] = colors.sort((a, b) => b.lightness - a.lightness); // sort by lightness and get the brightest color as accent
+    const secondaryColor = endColors[endColors.length - 1]; // get the darkest color as secondary
 
-    this.channelPalette = {
-      accent: accentColor?.hex ?? '#FFF',
-      secondary: secondaryColor?.hex ?? '#000',
+    if (accentColor.lightness > 0.5) {
+      this.channelPalette = {
+        accent: accentColor?.hex ?? '#FFF',
+        secondary: secondaryColor?.hex ?? '#000',
+      }
+    } else {
+      this.channelPalette = {
+        accent: '#FFF',
+        secondary: '#000',
+      }
     }
 
     await preloadImage(this.channel.profilePictureUrl);

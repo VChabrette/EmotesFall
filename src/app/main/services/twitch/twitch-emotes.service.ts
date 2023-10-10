@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { HelixEmoteScale } from '@twurple/api';
+import { HelixChannelEmote, HelixEmoteScale } from '@twurple/api';
 
 import { EmotesService } from '../models/emotes-service.interface';
 import { TwitchApiService } from './twitch-api.service';
@@ -30,13 +30,21 @@ export class TwitchEmotesService implements EmotesService {
     return exists;
   };
 
-  public async getChannelEmotes(channelName: string, animated = true): Promise<Array<string>> {
+  public async getChannelEmotesUrls(channelName: string, animated = true): Promise<string[]> {
+    const emotes = await this.getChannelEmotes(channelName);
+    return this.getUrlsFromChannelEmotes(emotes, animated);
+  }
+
+  public async getChannelEmotes(channelName: string): Promise<HelixChannelEmote[]> {
     const user = await this.api.getUserByName(channelName);
     if (!user) {
       throw new Error(`Could not find user ${channelName}`);
     }
 
-    const emotes = await this.api.getChannelEmotes(user);
+    return await this.api.getChannelEmotes(user);
+  }
+
+  public getUrlsFromChannelEmotes(emotes: HelixChannelEmote[], animated = true): string[] {
     return emotes.map(emote => {
       const url = emote.getAnimatedImageUrl('3.0');
       return url && animated ? url : emote.getStaticImageUrl('3.0') as string

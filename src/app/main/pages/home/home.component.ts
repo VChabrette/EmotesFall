@@ -73,7 +73,7 @@ export class HomeComponent {
     this.chat.connected$.subscribe(async connected => {
       if (connected) {
         this.applyPalette();
-        this.channelEmotes = (await this.emotes.getChannelEmotes(this.channel!.name));
+        this.channelEmotes = (await this.emotes.getChannelEmotesUrls(this.channel!.name));
       } else {
         this.resetPalette();
         this.channelEmotes = [];
@@ -153,7 +153,7 @@ export class HomeComponent {
   }
 
   public async test() {
-    const channelEmotes = await this.emotes.getChannelEmotes(this.channel!.name, this.emotesFall.animated);
+    const channelEmotes = await this.emotes.getChannelEmotesUrls(this.channel!.name, this.emotesFall.animated);
     this.emotesFall.sendEmotes(channelEmotes);
   }
 

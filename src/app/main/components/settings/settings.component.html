@@ -5,20 +5,32 @@
 			<div class="flex items-center space-x-2">
 				<input
 					type="checkbox" id="animated" formControlName="animated"
-					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100 cursor-pointer" />
+					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-70 checked:before:opacity-100 cursor-pointer" />
 				<label for="animated" class="text-secondary">Emotes animées</label>
 			</div>
 			<div class="flex items-center space-x-2">
 				<input
 					type="checkbox" id="fpsGuard" formControlName="fpsGuard"
-					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100 cursor-pointer" />
-				<label for="fpsGuard" class="text-secondary">Système anti lag</label>
+					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-70 checked:before:opacity-100 cursor-pointer" />
+				<label for="fpsGuard" class="text-secondary">Système anti-lag</label>
+			</div>
+			<div class="flex items-center space-x-2">
+				<input
+					   type="checkbox" id="reactToRaids" formControlName="reactToRaids"
+					   class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-70 checked:before:opacity-100 cursor-pointer" />
+				<label for="reactToRaids" class="text-secondary">Réagir aux raids</label>
+			</div>
+			<div class="flex items-center col-span-2 space-x-2">
+				<input
+					   type="checkbox" id="onlyStreamerEmotes" formControlName="onlyStreamerEmotes"
+					   class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-70 checked:before:opacity-100 cursor-pointer" />
+				<label for="onlyStreamerEmotes" class="text-secondary">N'afficher que ses propres emotes</label>
 			</div>
 			<div class="flex flex-col col-span-2 space-y-2">
 				<div class="flex items-center space-x-2">
 					<input
 						   type="checkbox" id="emotesDecay" formControlName="emotesDecay"
-						   class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100 cursor-pointer" />
+						   class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-70 checked:before:opacity-100 cursor-pointer" />
 					<label for="emotesDecay" class="text-secondary">Disparition automatique des emotes</label>
 				</div>
 				<div class="flex items-center w-full space-x-2 text-sm italic align-middle" *ngIf="settingsForm.controls.emotesDecay.value">

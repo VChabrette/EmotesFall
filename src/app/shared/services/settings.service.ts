@@ -69,6 +69,24 @@ export class SettingsService {
   }
   public get emotesDuration$() { return this.get$<number | null>('emotesDuration') }
 
+  // reactToRaids
+  private _reactToRaids = true;
+  public get reactToRaids() { return this._reactToRaids }
+  public set reactToRaids(val) {
+    this._reactToRaids = val;
+    this.setValue('reactToRaids', val)
+  }
+  public get reactToRaids$() { return this.get$<boolean>('reactToRaids') }
+
+  // onlyStreamerEmotes
+  private _onlyStreamerEmotes = false;
+  public get onlyStreamerEmotes() { return this._onlyStreamerEmotes }
+  public set onlyStreamerEmotes(val) {
+    this._onlyStreamerEmotes = val;
+    this.setValue('onlyStreamerEmotes', val)
+  }
+  public get onlyStreamerEmotes$() { return this.get$<boolean>('onlyStreamerEmotes') }
+
   constructor(
     private storage: StorageService,
     private state: SharedStateService,

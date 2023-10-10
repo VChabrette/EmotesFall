@@ -22,6 +22,10 @@ export class TwitchChatService implements ChatService {
 
   public connected$ = new BehaviorSubject<boolean>(false);
 
+  public get username(): string | undefined {
+    return this.client?.currentChannels[0].slice(1);
+  }
+
   private async waitForConnection(): Promise<void> {
     if (!this.client) throw new Error('No client initialized')
 

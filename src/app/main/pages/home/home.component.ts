@@ -12,6 +12,8 @@ import { StorageService } from '../../../core/services/storage.service';
 import { Toggler } from '../../../shared/models/toggler';
 import i18n from '../../../../i18n/fr_FR.json';
 
+import * as packageJson from '../../../../../package.json';
+
 const preloadImage = async (url: string) => new Promise<void>(res => {
   const img = new Image();
   img.src = url;
@@ -24,6 +26,11 @@ const preloadImage = async (url: string) => new Promise<void>(res => {
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
+  private packageJson = packageJson;
+  public get version() {
+    return this.packageJson.version;
+  }
+
   public channelForm = new FormGroup({
     channel: new FormControl('',
       [

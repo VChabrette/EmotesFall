@@ -1,7 +1,7 @@
 [package]
 name = "emotes-fall"
-version = "0.1.0"
-description = "A Tauri app with embedded server for external views"
+version = "0.1.1"
+description = "A fun way to display emotes on your stream"
 authors = ["Vincent Chabrette"]
 license = ""
 repository = ""

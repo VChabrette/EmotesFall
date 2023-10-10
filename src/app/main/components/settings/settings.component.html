@@ -1,18 +1,34 @@
 <form [formGroup]="settingsForm" class="flex flex-col w-full gap-6">
 	<div class="space-y-2">
 		<p class="text-lg">Paramètres généraux</p>
-		<div class="grid justify-center w-full grid-cols-2 gap-x-10">
+		<div class="grid justify-center w-full grid-cols-2 gap-x-10 gap-y-4">
 			<div class="flex items-center space-x-2">
 				<input
 					type="checkbox" id="animated" formControlName="animated"
-					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100" />
+					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100 cursor-pointer" />
 				<label for="animated" class="text-secondary">Emotes animées</label>
 			</div>
 			<div class="flex items-center space-x-2">
 				<input
 					type="checkbox" id="fpsGuard" formControlName="fpsGuard"
-					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100" />
-				<label for="fpsGuard" class="text-secondary">Contrôle des FPS</label>
+					class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100 cursor-pointer" />
+				<label for="fpsGuard" class="text-secondary">Système anti lag</label>
+			</div>
+			<div class="flex flex-col col-span-2 space-y-2">
+				<div class="flex items-center space-x-2">
+					<input
+						   type="checkbox" id="emotesDecay" formControlName="emotesDecay"
+						   class="appearance-none flex items-center w-9 focus:outline-none h-5 bg-secondary rounded-full before:inline-block before:rounded-full before:bg-accent before:h-4 before:w-4 checked:before:translate-x-full shadow-inner transition-all duration-300 before:ml-0.5 before:opacity-80 checked:before:opacity-100 cursor-pointer" />
+					<label for="emotesDecay" class="text-secondary">Disparition automatique des emotes</label>
+				</div>
+				<div class="flex items-center w-full space-x-2 text-sm italic align-middle" *ngIf="settingsForm.controls.emotesDecay.value">
+					<label for="emotesDuration" class="text-secondary">Durée avant disparition : </label>
+					<div class="flex items-center space-x-2 text-sm">
+						<input title="emotesDuration" name="emotesDuration" type="number" formControlName="emotesDuration" min="0"
+							 class="flex-1 block w-8 text-center bg-transparent border-b-[1px] select-text border-secondary text-secondary focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+						</div>
+						<div>secondes</div>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -17,30 +17,35 @@
 	</div>
 </div>
 <div [ngClass]="{'translate-y-full': !opened.get('settings'), 'z-30': opened.get('settings')}" class="fixed bottom-0 left-0 z-20 w-full">
-	<div class="float-right -translate-y-full mr-7 text-secondary">
+	<div class="absolute float-right -translate-y-full text-secondary right-[5%]">
 		<button class="flex items-center justify-center p-2 space-x-6 align-middle rounded-t-xl bg-accent" title="settings"
 				(click)="opened.toggle('settings')">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" class="fill-current hover:animate-spin text-secondary">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-8 fill-current hover:animate-spin text-secondary">
 				<path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5s3.5 1.57 3.5 3.5s-1.57 3.5-3.5 3.5z" />
 			</svg>
 		</button>
 	</div>
-	<div class="w-full p-10 bg-accent">
+	<div class="w-full p-10 pt-8 bg-accent">
 		<app-settings class="text-secondary"></app-settings>
 	</div>
 </div>
 <div [ngClass]="{'translate-y-full': !opened.get('link'), 'z-30': opened.get('link')}" class="fixed bottom-0 left-0 z-20 w-full">
-	<div class="float-right mr-24 -translate-y-full text-secondary">
+	<div class="absolute float-right -translate-y-full text-secondary right-[20%]">
 		<button class="flex items-center justify-center p-2 space-x-6 align-middle rounded-t-xl bg-accent" title="link"
 				(click)="opened.toggle('link')">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" class="fill-current hover:animate-pulse text-secondary">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-8 fill-current hover:animate-pulse text-secondary">
 				<path fill="none" d="M0 0h24v24H0z" />
 				<path d="M17.657 14.828l-1.414-1.414L17.657 12A4 4 0 1 0 12 6.343l-1.414 1.414-1.414-1.414 1.414-1.414a6 6 0 0 1 8.485 8.485l-1.414 1.414zm-2.829 2.829l-1.414 1.414a6 6 0 1 1-8.485-8.485l1.414-1.414 1.414 1.414L6.343 12A4 4 0 1 0 12 17.657l1.414-1.414 1.414 1.414zm0-9.9l1.415 1.415-7.071 7.07-1.415-1.414 7.071-7.07z" />
 			</svg>
 		</button>
 	</div>
-	<div class="w-full px-10 pt-2 pb-10 bg-accent text-secondary">
+	<div class="w-full p-10 pt-8 bg-accent">
 		<app-overlays class="text-secondary"></app-overlays>
 	</div>
 </div>
+<!-- Add version in the bottom left -->
+<div class="fixed bottom-0 left-0 z-10 pb-4 pl-5 text-xs opacity-25 text-accent">
+	v{{version}}
+</div>
+
 <app-emotes-background [emotes]="channelEmotes" class="fixed top-0 left-0 z-0 w-full h-full opacity-50 pointer-events-none"></app-emotes-background>

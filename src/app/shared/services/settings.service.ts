@@ -60,6 +60,15 @@ export class SettingsService {
   }
   public get fpsGuard$() { return this.get$<boolean>('fpsGuard') }
 
+  // emotesDuration
+  private _emotesDuration: number | null = 60;
+  public get emotesDuration() { return this._emotesDuration }
+  public set emotesDuration(val) {
+    this._emotesDuration = val;
+    this.setValue('emotesDuration', val)
+  }
+  public get emotesDuration$() { return this.get$<number | null>('emotesDuration') }
+
   constructor(
     private storage: StorageService,
     private state: SharedStateService,
@@ -79,7 +88,7 @@ export class SettingsService {
         console.log('Loading setting', settingKey);
         if (this.storage.isInitialized) {
           const val = this.storage.get(settingKey);
-          if (val !== null) {
+          if (typeof val !== 'undefined') {
             $this[settingKey] = val;
             console.log('- Loaded ' + key + ' from storage: ' + val);
           } else if (typeof defaultVal !== 'undefined') {

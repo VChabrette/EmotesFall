@@ -256,7 +256,7 @@ export class EmotesApp extends Application {
 		if (this.settings.gravity === 0) this.nudge(emoteBody, -0.1); // HACK: avoid emotes to be stuck when gravity is 0
 
 		// Start emote decay
-		emoteSprite.startDecay(60_000, () => this.nudge(emoteBody, 0.3));
+		if (this.settings.emotesDuration !== null) emoteSprite.startDecay(this.settings.emotesDuration * 1000, () => this.nudge(emoteBody, 0.3));
 	}
 
 	public flush() {

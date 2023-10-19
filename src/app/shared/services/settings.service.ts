@@ -7,7 +7,7 @@ import { StorageService } from '../../core/services/storage.service';
 })
 export class SettingsService {
   // scale
-  private _scale: number = 0.5;
+  private _scale: number = 0.55;
   public get scale() { return this._scale }
   public set scale(val) {
     this._scale = val;
@@ -25,7 +25,7 @@ export class SettingsService {
   public get friction$() { return this.get$<number>('friction') }
 
   // restitution
-  private _restitution: number = 0.2;
+  private _restitution: number = 0.5;
   public get restitution() { return this._restitution }
   public set restitution(val) {
     this._restitution = val;

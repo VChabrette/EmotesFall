@@ -84,7 +84,7 @@ export class HomeComponent {
     const savedChannel = this.storage.get<string>('channel');
     if (!savedChannel || typeof savedChannel !== 'string') return;
 
-    this.channelControl.setValue(this.storage.get<string>('channel'), { emitEvent: true });
+    this.channelControl.setValue(this.storage.get<string>('channel') ?? null, { emitEvent: true });
   }
 
   private async loadChannel(channel: string | null) {

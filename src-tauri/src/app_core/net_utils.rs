@@ -13,6 +13,12 @@ pub fn get_ip() -> String {
         ip = interface.ip().to_string();
         break;
     }
+
+    // if we didn't find an ip, use 127.0.0.1 (localhost)
+    if ip.is_empty() {
+        ip = "127.0.0.1".to_string();
+    }
+
     ip
 }
 

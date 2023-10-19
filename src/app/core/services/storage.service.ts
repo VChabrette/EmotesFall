@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BaseDirectory, createDir, readDir, readTextFile, writeFile } from '@tauri-apps/api/fs';
 import { debounceTime, Subject } from 'rxjs';
 
-const FILENAME = '.persistent_data';
+const FILENAME = 'persistent_data.json';
 const TAURI_ACCESSIBLE = !!window.__TAURI_IPC__;
 
 const clone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
@@ -23,16 +23,16 @@ export class StorageService {
 		this.save$.pipe(debounceTime(1000)).subscribe(() => this.saveData());
 	}
 
-	public get<T = any>(key: string): T | null {
+	public get<T = any>(key: string): T | null | undefined {
 		if (!TAURI_ACCESSIBLE) throw new Error('Tauri is not accessible, cannot get data from storage');
 
 		// return a clone of the value to prevent modification of the original value
 		if (typeof this.data.get(key) !== 'undefined') return clone(this.data.get(key));
 
-		return null;
+		return undefined;
 	}
 
-	public async set<T>(key: string, val?: T) {
+	public async set<T>(key: string, val?: T | null) {
 		if (!TAURI_ACCESSIBLE) throw new Error('Tauri is not accessible, cannot set data in storage');
 
 		if (JSON.stringify(this.get(key)) === JSON.stringify(val)) return; // Only register if value is modified

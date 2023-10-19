@@ -6,10 +6,11 @@ pub fn get_ip() -> String {
     let interfaces = get_if_addrs::get_if_addrs().unwrap();
     let mut ip = String::new();
     for interface in interfaces {
-        if interface.is_loopback() {
-            continue;
-        }
-        // if interface.is_ipv6() { continue; }
+        if interface.is_loopback() { continue; }
+
+        // if interface is ipv6, skip it (there is no method for it, so we check if it contains a colon)
+        if interface.ip().to_string().contains(":") { continue; }
+
         ip = interface.ip().to_string();
         break;
     }
@@ -19,7 +20,7 @@ pub fn get_ip() -> String {
         ip = "127.0.0.1".to_string();
     }
 
-    ip
+    return ip
 }
 
 // check if the port is free on the computer, and allowed on the local network

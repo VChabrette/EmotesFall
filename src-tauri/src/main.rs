@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use std::io::Write;
 use tauri::{utils::config::AppUrl, WindowUrl};
 
 use tokio::runtime::Runtime;
@@ -15,6 +16,22 @@ fn greet(name: &str) -> String {
 }
 
 fn main() {
+   std::panic::set_hook(Box::new(|info| {
+        // error!("Panicked: {:?}", info);
+
+        // log info to file
+        let mut log_file = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("error.log")
+            .unwrap();
+
+        let _ = writeln!(log_file, "Panicked: {:?}", info);
+
+        // log info to console
+        println!("Panicked: {:?}", info);
+    }));
+
   let domain = if cfg!(dev) { "localhost".to_string() } else { get_ip() };
 
   // get a port for the WS server

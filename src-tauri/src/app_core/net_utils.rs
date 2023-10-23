@@ -48,7 +48,13 @@ pub fn get_free_port() -> u16 {
 // this is used by the desktop app to know which port to use
 pub fn register_port(config: &Config, port: u16) {
     let data_dir = tauri::api::path::app_data_dir(config).unwrap();
-    let port_file = data_dir.join(".port");
+
+    // Check if the data dir exists, if not, create it
+    if !data_dir.exists() {
+        std::fs::create_dir_all(&data_dir).unwrap();
+    }
+
+    let port_file = data_dir.join("http_port");
     let mut log_file = std::fs::OpenOptions::new()
         .create(true)
         .append(true)
@@ -63,7 +69,7 @@ pub fn register_port(config: &Config, port: u16) {
 // this is used by the desktop app to know which port to use
 pub fn load_port(config: &Config) -> Option<u16> {
     let data_dir = tauri::api::path::app_data_dir(config).unwrap();
-    let port_file = data_dir.join(".port");
+    let port_file = data_dir.join("http_port");
 	if port_file.exists() {
 		let port = std::fs::read_to_string(port_file).unwrap();
 		Some(port.parse().unwrap())

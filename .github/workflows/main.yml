@@ -71,6 +71,8 @@ jobs:
     - uses: tauri-apps/tauri-action@v0.4.3
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NG_APP_TWITCH_CLIENT_ID: ${{ secrets.NG_APP_TWITCH_CLIENT_ID }}
+        NG_APP_TWITCH_CLIENT_SECRET: ${{ secrets.NG_APP_TWITCH_CLIENT_SECRET }}
       with:
         tagName: emotesfall-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
         releaseName: "EmotesFall v__VERSION__"

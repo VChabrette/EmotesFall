@@ -17,8 +17,6 @@ fn greet(name: &str) -> String {
 
 fn main() {
    std::panic::set_hook(Box::new(|info| {
-        // error!("Panicked: {:?}", info);
-
         // log info to file
         let mut log_file = std::fs::OpenOptions::new()
             .create(true)

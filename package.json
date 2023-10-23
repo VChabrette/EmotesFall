@@ -1,6 +1,6 @@
 {
   "name": "emotes-fall",
-  "version": "0.2.5",
+  "version": "0.3.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -35,6 +35,7 @@
     "@angular-devkit/build-angular": "^16.2.0",
     "@angular/cli": "~16.2.0",
     "@angular/compiler-cli": "^16.2.1",
+    "@ngx-env/builder": "16.1.3",
     "@tauri-apps/cli": "^1.4.0",
     "@types/jasmine": "~4.3.0",
     "autoprefixer": "^10.4.15",

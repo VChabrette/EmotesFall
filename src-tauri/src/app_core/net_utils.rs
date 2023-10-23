@@ -55,13 +55,6 @@ pub fn register_port(config: &Config, port: u16) {
     }
 
     let port_file = data_dir.join("http_port");
-    let mut log_file = std::fs::OpenOptions::new()
-        .create(true)
-        .append(true)
-        .open("logs.log")
-        .unwrap();
-
-    let _ = writeln!(log_file, "Registering port in: {}", port_file.display().to_string());
     std::fs::write(port_file, port.to_string()).unwrap();
 }
 

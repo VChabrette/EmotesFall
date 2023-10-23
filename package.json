@@ -1,11 +1,12 @@
 {
   "name": "emotes-fall",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "update_version": "sh update_version.sh",
     "tauri": "tauri"
   },
   "private": true,

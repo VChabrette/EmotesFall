@@ -1,6 +1,7 @@
 use std::net::{SocketAddr, TcpListener};
 
 use tauri::Config;
+use std::io::Write;
 
 pub fn get_ip() -> String {
     let interfaces = get_if_addrs::get_if_addrs().unwrap();
@@ -48,6 +49,13 @@ pub fn get_free_port() -> u16 {
 pub fn register_port(config: &Config, port: u16) {
     let data_dir = tauri::api::path::app_data_dir(config).unwrap();
     let port_file = data_dir.join(".port");
+    let mut log_file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("logs.log")
+        .unwrap();
+
+    let _ = writeln!(log_file, "Registering port in: {}", port_file.display().to_string());
     std::fs::write(port_file, port.to_string()).unwrap();
 }
 

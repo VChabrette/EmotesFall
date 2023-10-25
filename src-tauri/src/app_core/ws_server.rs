@@ -1,4 +1,4 @@
-use futures::{SinkExt, StreamExt, TryFutureExt};
+use futures::{SinkExt, StreamExt};
 use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::sync::{Arc, Mutex};
@@ -7,7 +7,7 @@ use tokio_stream::wrappers::UnboundedReceiverStream;
 use warp::ws::{Message, WebSocket};
 use warp::Filter;
 
-pub struct WsServer { }
+pub struct WsServer {}
 
 impl WsServer {
     pub async fn launch(addr: String, port: u16) {
@@ -58,7 +58,6 @@ impl WsServer {
         shared_state: Arc<Mutex<String>>,
     ) {
         // log
-        println!("New client handled!");
         let (mut client_ws_tx, mut client_ws_rx) = websocket.split();
 
         // Use an unbounded channel to handle buffering and flushing of messages
@@ -67,23 +66,29 @@ impl WsServer {
         let tx_clone = tx.clone();
         let mut rx = UnboundedReceiverStream::new(rx);
 
-        tokio::task::spawn(async move {
-            while let Some(message) = rx.next().await {
-                client_ws_tx
-                    .send(message)
-                    .unwrap_or_else(|e| {
-                        eprintln!("websocket send error: {}", e);
-                    })
-                    .await;
-            }
-        });
-
         // Generate a unique id for this unbouded sender
         let sender_id: String = uuid::Uuid::new_v4().to_string();
-        let sender_id2 = sender_id.clone();
+        let sender_id_clone = sender_id.clone();
+
+        println!("New client handled: {}", sender_id);
+        let sender_id_clone2 = sender_id.clone();
 
         // Add client's sender to the list of clients
         clients.lock().unwrap().insert(sender_id, tx);
+
+        // Channel used to send messages from other clients to this client
+        tokio::task::spawn(async move {
+            while let Some(message) = rx.next().await {
+                if client_ws_tx
+                    .send(message)
+                    .await
+                    .is_err() {
+                        eprintln!("websocket send error for client {}", sender_id_clone2);
+                        // Self::client_disconnected(sender_id_clone2, &clients_clone).await;
+                        break;
+                    }
+            }
+        });
 
         // Clone references for sending messages
         // let tx_broadcast = tx_broadcast.clone();-
@@ -93,9 +98,12 @@ impl WsServer {
                 Err(_) => break,
             };
 
-            let msg_str: String = msg.to_str().unwrap().to_string();
+            if msg.is_close() {
+                println!("Client {} disconnected", sender_id_clone);
+                break;
+            }
 
-            // println!("Received message from client: {}", msg_str);
+            let msg_str: String = msg.to_str().unwrap().to_string();
 
             // try to parse JSON message
             let json_msg: serde_json::Result<serde_json::Value> = serde_json::from_str(&msg_str);
@@ -104,7 +112,7 @@ impl WsServer {
                 let json_msg = json_msg.unwrap();
                 match json_msg.get("type") {
                     Some(type_val) => {
-						let type_str: &str = type_val.as_str().unwrap();
+                        let type_str: &str = type_val.as_str().unwrap();
 
                         match type_str {
                             "state_update" => {
@@ -119,13 +127,22 @@ impl WsServer {
                             }
                             "get_state" => {
                                 // the client is requesting the current state
-								let shared_state = shared_state.lock().unwrap();
-								let state_update_msg = format!("{{\"type\": \"state_update\", \"state\": {}}}", shared_state);
+                                let shared_state = shared_state.lock().unwrap();
+                                let state_update_msg = format!(
+                                    "{{\"type\": \"state_update\", \"state\": {}}}",
+                                    shared_state
+                                );
                                 //log message
-                                println!("Sending state to client {}: {}", sender_id2, state_update_msg);
-								if let Err(e) = tx_clone.send(Message::text(state_update_msg)) {
-									println!("Error sending state to client {}: {}", sender_id2, e);
-								}
+                                println!(
+                                    "Sending state to client {}: {}",
+                                    sender_id_clone, state_update_msg
+                                );
+                                if let Err(e) = tx_clone.send(Message::text(state_update_msg)) {
+                                    println!(
+                                        "Error sending state to client {}: {}",
+                                        sender_id_clone, e
+                                    );
+                                }
                             }
                             "event" => {
                                 // the client is sending an event
@@ -143,11 +160,8 @@ impl WsServer {
             }
 
             // send this message to all clients (except sender)
-            let mut clients = clients.lock().unwrap();
-            for (id, tx) in clients.iter_mut() {
-                if *id != sender_id2 {
-                    // get client sink
-
+            for (id, tx) in clients.lock().unwrap().iter_mut() {
+                if *id != sender_id_clone {
                     if let Err(e) = tx.send(Message::text(msg_str.clone())) {
                         println!("Error sending message to client {}: {}", id, e);
                     }
@@ -156,6 +170,15 @@ impl WsServer {
         }
 
         // Remove client's sender from the list of clients
-        clients.lock().unwrap().remove_entry(&sender_id2);
+        Self::client_disconnected(sender_id_clone, &clients).await;
+    }
+
+    async fn client_disconnected(
+        client_id: String,
+        clients: &Arc<Mutex<HashMap<String, UnboundedSender<Message>>>>,
+    ) {
+        eprintln!("Client disconnected: {}", client_id);
+        // Stream closed up, so remove from the user list
+        clients.lock().unwrap().remove_entry(&client_id);
     }
 }

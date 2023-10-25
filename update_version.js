@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const version = process.argv[2];
+let version = process.argv[2];
 const packageJsonPath = path.join(__dirname, 'package.json');
 const cargoTomlPath = path.join(__dirname, 'src-tauri', 'Cargo.toml');
 const tauriConfPath = path.join(__dirname, 'src-tauri', 'tauri.conf.json');
@@ -15,6 +15,22 @@ const tauriConfPath = path.join(__dirname, 'src-tauri', 'tauri.conf.json');
 if (!version) {
 	console.error('No version provided');
 	process.exit(1);
+}
+
+// argument can also be patch | minor | major
+if (['patch', 'minor', 'major'].includes(version)) {
+	const currentVersion = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')).version;
+	const [major, minor, patch] = currentVersion.split('.').map(Number);
+	const newVersion = {
+		patch: `${major}.${minor}.${patch + 1}`,
+		minor: `${major}.${minor + 1}.${patch}`,
+		major: `${major + 1}.${minor}.${patch}`,
+	}[version];
+	if (!newVersion) {
+		console.error('Invalid version provided');
+		process.exit(1);
+	}
+	version = newVersion;
 }
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
